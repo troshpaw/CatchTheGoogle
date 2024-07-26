@@ -1,6 +1,9 @@
 import { SettingsComponent } from "./Settings/Settings.component.js";
 import { ResultPanelComponent } from "./ResultPanel/ResultPanel.component.js";
 import { GridComponent } from "./Grid/Grid.component.js";
+import { LoseComponent } from "./Lose/Lose.component.js";
+import { getGameStatus } from "../../core/state-manager.js";
+import { GAME_STATUSES } from "../../core/constants.js";
 
 export function AppComponent() {
     const element = document.createElement('div');
@@ -11,9 +14,21 @@ export function AppComponent() {
 }
 
 async function render(element) {
-    const settingsComponent = SettingsComponent();
-    const resultPanelComponent = ResultPanelComponent(1);
-    const gridComponent = GridComponent(2);
+    
+    const gameStatus = await getGameStatus();
 
-    element.append(settingsComponent.element, resultPanelComponent.element, gridComponent.element);
+    switch (gameStatus) {
+        case GAME_STATUSES.IN_PROGRESS:
+            const settingsComponent = SettingsComponent();
+            const resultPanelComponent = ResultPanelComponent();
+            const gridComponent = GridComponent();
+            element.append(settingsComponent.element, resultPanelComponent.element, gridComponent.element);
+            break;
+        case GAME_STATUSES.LOSE:
+            const loseComponent = LoseComponent();
+            element.append(loseComponent.element);
+            break;    
+        default:
+            throw new Error('not implemented');
+    }
 }
