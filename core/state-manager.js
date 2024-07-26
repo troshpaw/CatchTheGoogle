@@ -48,6 +48,7 @@ function _notifyObservers() {
     })
 }
 
+
 function _generateNewIntegerNumber(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -79,12 +80,7 @@ function _getPlayerIndexByNumber(playerNumber) {
     return playerIndex;
 } 
 
-
 // INTERFACE/ADAPTER
-export async function getGooglePoints() {
-    return _state.points.google;
-}
-
 export async function start() {
     _state.positions.players[0] = {x: 0, y: 0};
     _state.positions.players[1] = {x: _state.settings.gridSize.columnsCount - 1, y: _state.settings.gridSize.rowsCount - 1};
@@ -113,6 +109,10 @@ export async function playAgain() {
     _state.gameStatus = GAME_STATUSES.SETTINGS;
 
     _notifyObservers();
+}
+
+export async function getGooglePoints() {
+    return _state.points.google;
 }
 
 /**
