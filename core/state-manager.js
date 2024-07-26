@@ -1,5 +1,7 @@
 const _state = {
     settings: {
+        /* in milliseconds */
+        googleJumpInterval: 2000,
         gridSize: {
             rowsCount: 4,
             columnsCount: 4
@@ -20,6 +22,48 @@ const _state = {
     }
 }
 
+// OBSERVER
+let _observers = [];
+
+export function subscribe(observer) {
+    _observers.push(observer);
+}
+
+export function unsubscribe(observer) {
+    _observers = _observers.filter(o => o !== observer)
+}
+
+function _notifyObservers() {
+    _observers.forEach(o => {
+        try {
+            o();
+        } catch (error) {
+            console.error(error);
+        }
+    })
+}
+
+function _generateNewIntegerNumber(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function _jumpGoogleToNewPosition() {
+    const newPosition = {..._state.positions.google}
+
+    do {
+        newPosition.x = _generateNewIntegerNumber(0, _state.settings.gridSize.columnsCount - 1);
+        newPosition.y = _generateNewIntegerNumber(0, _state.settings.gridSize.rowsCount - 1);
+
+        var isNewPositionMatchWithCurrentGooglePosition = newPosition.x === _state.positions.google.x && newPosition.y === _state.positions.google.y;
+        var isNewPositionMatchWithCurrentPlayer1Position = newPosition.x === _state.positions.players[0].x && newPosition.y === _state.positions.players[0].y;
+        var isNewPositionMatchWithCurrentPlayer2Position = newPosition.x === _state.positions.players[1].x && newPosition.y === _state.positions.players[1].y;
+    } while (isNewPositionMatchWithCurrentGooglePosition || isNewPositionMatchWithCurrentPlayer1Position || isNewPositionMatchWithCurrentPlayer2Position);
+
+    _state.positions.google = newPosition;
+}
+
 function _getPlayerIndexByNumber(playerNumber) {
     const playerIndex = playerNumber - 1;
 
@@ -29,6 +73,14 @@ function _getPlayerIndexByNumber(playerNumber) {
 
     return playerIndex;
 }
+
+setInterval(() => {
+    // _state.positions.google = {x: 0, y: 0};
+    _jumpGoogleToNewPosition();
+
+    _state.points.google++;
+    _notifyObservers();
+}, _state.settings.googleJumpInterval);
 
 // INTERFACE/ADAPTER
 export async function getGooglePoints() {
