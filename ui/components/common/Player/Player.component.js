@@ -1,11 +1,11 @@
-export function PlayerComponent() {
+export function PlayerComponent(playerNumber) {
     const element = document.createElement('img');
     
-    render(element);
+    render(element, playerNumber);
 
     return {element};
 }
 
-async function render(element) {
-    element.src = "assets/images/player1.png";
+async function render(element, playerNumber) {
+    element.src = `assets/images/player${playerNumber}.png`;
 }
