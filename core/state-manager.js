@@ -1,13 +1,13 @@
 import { GAME_STATUSES } from "./constants.js";
 
 const _state = {
-    gameStatus: GAME_STATUSES.IN_PROGRESS,
+    gameStatus: GAME_STATUSES.SETTINGS,
     settings: {
         /* in milliseconds */
         googleJumpInterval: 1000,
         gridSize: {
-            rowsCount: 4,
-            columnsCount: 4
+            rowsCount: 5,
+            columnsCount: 5
         },
         pointsToLose: 5,
         pointsToWin: 5
@@ -79,21 +79,40 @@ function _getPlayerIndexByNumber(playerNumber) {
     return playerIndex;
 } 
 
-let googleJumpInterval = setInterval(() => {
-    _jumpGoogleToNewPosition();
-    _state.points.google++;
-    
-    if (_state.points.google === _state.settings.pointsToLose) {
-        clearInterval(googleJumpInterval);
-        _state.gameStatus = GAME_STATUSES.LOSE;
-    }
-
-    _notifyObservers();
-}, _state.settings.googleJumpInterval);
 
 // INTERFACE/ADAPTER
 export async function getGooglePoints() {
     return _state.points.google;
+}
+
+export async function start() {
+    _state.positions.players[0] = {x: 0, y: 0};
+    _state.positions.players[1] = {x: _state.settings.gridSize.columnsCount - 1, y: _state.settings.gridSize.rowsCount - 1};
+    _jumpGoogleToNewPosition();
+    
+    _state.points.google = 0;
+    _state.points.players[0] = 0;
+    _state.points.players[1] = 0;
+    
+    let googleJumpInterval = setInterval(() => {
+        _jumpGoogleToNewPosition();
+        _state.points.google++;
+        
+        if (_state.points.google === _state.settings.pointsToLose) {
+            clearInterval(googleJumpInterval);
+            _state.gameStatus = GAME_STATUSES.LOSE;
+        }
+        
+        _notifyObservers();
+    }, _state.settings.googleJumpInterval);
+    _state.gameStatus = GAME_STATUSES.IN_PROGRESS;
+    _notifyObservers();
+}
+
+export async function playAgain() {
+    _state.gameStatus = GAME_STATUSES.SETTINGS;
+
+    _notifyObservers();
 }
 
 /**
