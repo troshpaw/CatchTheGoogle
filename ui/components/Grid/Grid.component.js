@@ -5,6 +5,8 @@ export function GridComponent() {
     const element = document.createElement('table');
     element.classList.add('grid');
 
+    // console.log('GRID CREATING');
+
     subscribe(() => {
         render(element);
     });
@@ -15,6 +17,8 @@ export function GridComponent() {
 }
 
 async function render(element) {
+    // console.log('GRID RENDERING');
+
     element.innerHTML = "";
 
     const gridSizePromise = getGridSize();

@@ -6,12 +6,10 @@ import { getGameStatus, subscribe } from "../../core/state-manager.js";
 import { GAME_STATUSES } from "../../core/constants.js";
 import { StartComponent } from "./Start/Start.component.js";
 
-// const localState = {prevGameStatus: null};
-
 export function AppComponent() {
     const localState = {prevGameStatus: null};
     
-    console.log('APP CREATING')
+    console.log('APP CREATING');
    
     const element = document.createElement('div');
     
