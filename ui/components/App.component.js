@@ -2,7 +2,7 @@ import { SettingsComponent } from "./Settings/Settings.component.js";
 import { ResultPanelComponent } from "./ResultPanel/ResultPanel.component.js";
 import { GridComponent } from "./Grid/Grid.component.js";
 import { LoseComponent } from "./Lose/Lose.component.js";
-import { getGameStatus } from "../../core/state-manager.js";
+import { getGameStatus, subscribe } from "../../core/state-manager.js";
 import { GAME_STATUSES } from "../../core/constants.js";
 import { StartComponent } from "./Start/Start.component.js";
 
@@ -15,6 +15,10 @@ export function AppComponent() {
    
     const element = document.createElement('div');
     
+    subscribe(() => {
+        render(element, localState);
+    });
+
     render(element, localState);
     
     return {element}; // {element} === {element: element}
@@ -26,7 +30,9 @@ async function render(element, localState) {
     if (localState.prevGameStatus === gameStatus) return;
     localState.prevGameStatus = gameStatus;
     
-    console.log('APP RENDERING')
+    console.log('APP RENDERING');
+
+    element.innerHTML = "";
 
     switch (gameStatus) {
         case GAME_STATUSES.SETTINGS: {
