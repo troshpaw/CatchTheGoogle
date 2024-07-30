@@ -9,7 +9,7 @@ const _state = {
             rowsCount: 5,
             columnsCount: 5
         },
-        pointsToLose: 2,
+        pointsToLose: 5,
         pointsToWin: 5
     },
     

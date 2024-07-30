@@ -7,7 +7,7 @@ import { GAME_STATUSES } from "../../core/constants.js";
 import { StartComponent } from "./Start/Start.component.js";
 
 export function AppComponent() {
-    const localState = {prevGameStatus: null, cleanupFunctions: []};
+    const localState = { prevGameStatus: null, cleanupFunctions: [] };
     
     console.log('APP CREATING');
    
@@ -45,8 +45,10 @@ async function render(element, localState) {
         }
         case GAME_STATUSES.IN_PROGRESS:
             const settingsComponent = SettingsComponent();
+            
             const resultPanelComponent = ResultPanelComponent();
             localState.cleanupFunctions.push(resultPanelComponent.cleanup);
+            
             const gridComponent = GridComponent();
             localState.cleanupFunctions.push(gridComponent.cleanup);
 
