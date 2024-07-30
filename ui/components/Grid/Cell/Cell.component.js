@@ -1,4 +1,4 @@
-import { getGooglePosition, getPlayerPosition } from "../../../../core/state-manager.js";
+import { getGooglePosition, getPlayerPosition, subscribe, unsubscribe } from "../../../../core/state-manager.js";
 import { GoogleComponent } from "../../common/Google/Google.component.js";
 import { PlayerComponent } from "../../common/Player/Player.component.js";
 
@@ -7,9 +7,15 @@ export function CellComponent(x, y) {
 
     const element = document.createElement('td');
     
+    const observer = () => {
+        render(element);
+    };
+
+    subscribe(observer);
+
     render(element, x, y);
 
-    return {element};
+    return { element, cleanup: () => { unsubscribe() } };
 }
 
 async function render(element, x, y) {
