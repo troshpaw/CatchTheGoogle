@@ -1,14 +1,23 @@
+import { EVENTS } from "../../../../core/constants.js";
 import { getGooglePosition, getPlayerPosition, subscribe, unsubscribe } from "../../../../core/state-manager.js";
 import { GoogleComponent } from "../../common/Google/Google.component.js";
 import { PlayerComponent } from "../../common/Player/Player.component.js";
 
 export function CellComponent(x, y) {
-    // console.log("Cell Component CREATING");
+    console.log("Cell Component CREATING");
 
     const element = document.createElement('td');
     
-    const observer = () => {
-        render(element, x, y);
+    const observer = (e) => {
+        // console.log(e);
+        if (e.name !== EVENTS.GOOGLE_JUMPED) return;
+        
+        if (e.payload.oldPosition.x === x && e.payload.oldPosition.y === y) {
+            render(element, x, y);
+        }
+        if (e.payload.newPosition.x === x && e.payload.newPosition.y === y) {
+            render(element, x, y);
+        }        
     };
 
     subscribe(observer);
@@ -16,13 +25,13 @@ export function CellComponent(x, y) {
     render(element, x, y);
 
     return {element, cleanup: () => {
-        console.log(`cleanup (${x}, ${y})`);
+        // console.log(`cleanup (${x}, ${y})`);
         unsubscribe(observer) 
     }};
 }
 
 async function render(element, x, y) {
-    // console.log("RENDERING Cell Component");
+    console.log(`Cell Component RENDERING (${x}, ${y})`);
 
     element.innerHTML = "";
 

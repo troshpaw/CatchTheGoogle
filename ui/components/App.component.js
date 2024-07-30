@@ -9,7 +9,7 @@ import { StartComponent } from "./Start/Start.component.js";
 export function AppComponent() {
     const localState = { prevGameStatus: null, cleanupFunctions: [] };
     
-    console.log('APP CREATING');
+    // console.log('APP CREATING');
    
     const element = document.createElement('div');
     
@@ -28,7 +28,8 @@ async function render(element, localState) {
     if (localState.prevGameStatus === gameStatus) return;
     localState.prevGameStatus = gameStatus;
 
-    console.log('APP RENDERING');
+    // console.log('APP RENDERING');
+    console.log("===========================");
 
     localState.cleanupFunctions.forEach(cf => cf()); // cf - Cleanup Function
     localState.cleanupFunctions = [];
