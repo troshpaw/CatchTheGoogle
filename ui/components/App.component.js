@@ -23,12 +23,12 @@ export function AppComponent() {
 }
 
 async function render(element, localState) {
-    console.log('APP RENDERING');
-
     const gameStatus = await getGameStatus();
 
     if (localState.prevGameStatus === gameStatus) return;
     localState.prevGameStatus = gameStatus;
+
+    console.log('APP RENDERING');
 
     localState.cleanupFunctions.forEach(cf => cf()); // cf - Cleanup Function
     localState.cleanupFunctions = [];
