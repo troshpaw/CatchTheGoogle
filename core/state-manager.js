@@ -4,7 +4,7 @@ const _state = {
     gameStatus: GAME_STATUSES.SETTINGS,
     settings: {
         /* in milliseconds */
-        googleJumpInterval: 1000,
+        googleJumpInterval: 2000,
         gridSize: {
             rowsCount: 5,
             columnsCount: 5
