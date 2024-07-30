@@ -15,10 +15,7 @@ export function GridComponent() {
 
     render(element);
 
-    return {element, cleanup: () => {
-        console.log('GRID cleanup call');
-        unsubscribe(observer)
-    }};
+    return { element, cleanup: () => { unsubscribe(observer) } };
 }
 
 async function render(element) {
