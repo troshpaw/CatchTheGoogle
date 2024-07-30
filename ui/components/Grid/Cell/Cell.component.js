@@ -8,18 +8,20 @@ export function CellComponent(x, y) {
     const element = document.createElement('td');
     
     const observer = () => {
-        render(element);
+        render(element, x, y);
     };
 
     subscribe(observer);
 
     render(element, x, y);
 
-    return { element, cleanup: () => { unsubscribe() } };
+    return {element, cleanup: () => { unsubscribe() }};
 }
 
 async function render(element, x, y) {
     // console.log("RENDERING Cell Component");
+
+    element.innerHTML = "";
 
     const googlePosition = await getGooglePosition();
     const player1Position = await getPlayerPosition(1);
