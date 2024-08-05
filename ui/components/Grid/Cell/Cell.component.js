@@ -4,13 +4,13 @@ import { GoogleComponent } from "../../common/Google/Google.component.js";
 import { PlayerComponent } from "../../common/Player/Player.component.js";
 
 export function CellComponent(x, y) {
-    console.log("Cell Component CREATING");
+    // console.log("Cell Component CREATING");
 
     const element = document.createElement('td');
     
     const observer = (e) => {
         // console.log(e);
-        if (e.name !== EVENTS.GOOGLE_JUMPED) return;
+        if ([EVENTS.GOOGLE_JUMPED, EVENTS.PLAYER1_MOVED, EVENTS.PLAYER2_MOVED].every(name => name !== e.name)) return;
         
         if (e.payload.oldPosition.x === x && e.payload.oldPosition.y === y) {
             render(element, x, y);
@@ -31,7 +31,7 @@ export function CellComponent(x, y) {
 }
 
 async function render(element, x, y) {
-    console.log(`Cell Component RENDERING (${x}, ${y})`);
+    // console.log(`Cell Component RENDERING (${x}, ${y})`);
 
     element.innerHTML = "";
 

@@ -1,4 +1,4 @@
-import { EVENTS, GAME_STATUSES } from "./constants.js";
+import { EVENTS, GAME_STATUSES, MOVING_DIRECTIONS } from "./constants.js";
 
 const _state = {
     gameStatus: GAME_STATUSES.SETTINGS,
@@ -6,10 +6,10 @@ const _state = {
         /* in milliseconds */
         googleJumpInterval: 2000,
         gridSize: {
-            rowsCount: 10,
-            columnsCount: 10
+            rowsCount: 5,
+            columnsCount: 5
         },
-        pointsToLose: 5,
+        pointsToLose: 10,
         pointsToWin: 5
     },
     
@@ -52,7 +52,6 @@ function _notifyObservers(name, payload = {}) {
     })
 }
 
-
 function _generateNewIntegerNumber(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -66,10 +65,10 @@ function _jumpGoogleToNewPosition() {
         newPosition.x = _generateNewIntegerNumber(0, _state.settings.gridSize.columnsCount - 1);
         newPosition.y = _generateNewIntegerNumber(0, _state.settings.gridSize.rowsCount - 1);
 
-        var isNewPositionMatchWithCurrentGooglePosition = newPosition.x === _state.positions.google.x && newPosition.y === _state.positions.google.y;
-        var isNewPositionMatchWithCurrentPlayer1Position = newPosition.x === _state.positions.players[0].x && newPosition.y === _state.positions.players[0].y;
-        var isNewPositionMatchWithCurrentPlayer2Position = newPosition.x === _state.positions.players[1].x && newPosition.y === _state.positions.players[1].y;
-    } while (isNewPositionMatchWithCurrentGooglePosition || isNewPositionMatchWithCurrentPlayer1Position || isNewPositionMatchWithCurrentPlayer2Position);
+        // var isNewPositionMatchWithCurrentGooglePosition = newPosition.x === _state.positions.google.x && newPosition.y === _state.positions.google.y;
+        // var isNewPositionMatchWithCurrentPlayer1Position = newPosition.x === _state.positions.players[0].x && newPosition.y === _state.positions.players[0].y;
+        // var isNewPositionMatchWithCurrentPlayer2Position = newPosition.x === _state.positions.players[1].x && newPosition.y === _state.positions.players[1].y;
+    } while (_doesPositionMathWithPlayer1Position(newPosition) || _doesPositionMathWithPlayer2Position(newPosition) || _doesPositionMathWithGooglePosition(newPosition));
 
     _state.positions.google = newPosition;
 }
@@ -82,9 +81,53 @@ function _getPlayerIndexByNumber(playerNumber) {
     }
 
     return playerIndex;
-} 
+}
+
+function _doesPositionMathWithPlayer1Position(newPosition) {
+    return newPosition.x === _state.positions.players[0].x && newPosition.y === _state.positions.players[0].y;
+}
+
+function _doesPositionMathWithPlayer2Position(newPosition) {
+    return newPosition.x === _state.positions.players[1].x && newPosition.y === _state.positions.players[1].y;
+}
+
+function _doesPositionMathWithGooglePosition(newPosition) {
+    return newPosition.x === _state.positions.google.x && newPosition.y === _state.positions.google.y;
+}
+
+function _isPositionInValidRange(position) {
+    if (position.x < 0 || position.x >= _state.settings.gridSize.columnsCount) return false;
+    if (position.y < 0 || position.y >= _state.settings.gridSize.rowsCount) return false;
+
+    return true;
+}
+
+function _catchGoogle(playerNumber) {
+    const playerIndex = _getPlayerIndexByNumber(playerNumber);
+
+    _state.points.players[playerIndex]++;
+    _notifyObservers(EVENTS.SCORES_CHANGED);
+
+    if (_state.points.players[playerIndex] === _state.settings.pointsToWin) {
+        _state.gameStatus = GAME_STATUSES.WIN;
+        _notifyObservers(EVENTS.STATUS_CHANGED);
+        clearInterval(googleJumpInterval);
+    } else {
+        const oldPosition = {..._state.positions.google};
+        // console.log(oldPosition);
+        _jumpGoogleToNewPosition();
+        const newPosition = {..._state.positions.google};
+        // console.log(newPosition);
+        _notifyObservers(EVENTS.GOOGLE_JUMPED, {
+            oldPosition,
+            newPosition 
+        });
+    }
+}
 
 // INTERFACE/ADAPTER
+
+// COMMANDS / SETTER
 export async function start() {
     if (_state.gameStatus !== GAME_STATUSES.SETTINGS) throw new Error(`incorrect transition from "${_state.gameStatus}" to "${GAME_STATUSES.IN_PROGRESS}"`);
 
@@ -124,6 +167,53 @@ export async function playAgain() {
     _notifyObservers(EVENTS.STATUS_CHANGED);
 }
 
+export async function movePlayer(playerNumber, direction) {
+    if (_state.gameStatus !== GAME_STATUSES.IN_PROGRESS) {
+        console.warn('You can move player only when game is in progress');
+        return;
+    }
+
+    const playerIndex = _getPlayerIndexByNumber(playerNumber);
+    const oldPosition = {..._state.positions.players[playerIndex]};
+    const newPosition = {..._state.positions.players[playerIndex]};
+
+    switch (direction) {
+        case MOVING_DIRECTIONS.UP:
+            newPosition.y--;
+            break;
+        case MOVING_DIRECTIONS.DOWN:
+            newPosition.y++;
+            break;
+        case MOVING_DIRECTIONS.LEFT:
+            newPosition.x--;
+            break;
+        case MOVING_DIRECTIONS.RIGHT:
+            newPosition.x++;
+            break;
+    }
+
+    const isValidRange = _isPositionInValidRange(newPosition);
+    if (!isValidRange) return;
+
+    const isPlayer1PositionTheSame = _doesPositionMathWithPlayer1Position(newPosition);
+    if (isPlayer1PositionTheSame) return;
+
+    const isPlayer2PositionTheSame = _doesPositionMathWithPlayer2Position(newPosition);
+    if (isPlayer2PositionTheSame) return;
+
+    const ifGooglePositionTheSame = _doesPositionMathWithGooglePosition(newPosition);
+    if (ifGooglePositionTheSame) {
+        _catchGoogle(playerNumber);
+    }
+
+    _state.positions.players[playerIndex] = newPosition;
+    _notifyObservers(EVENTS[`PLAYER${playerNumber}_MOVED`], {
+        oldPosition: oldPosition,
+        newPosition: newPosition
+    });
+}
+
+// GETTERS / SELECTORS / QUERY
 export async function getGooglePoints() {
     return _state.points.google;
 }
