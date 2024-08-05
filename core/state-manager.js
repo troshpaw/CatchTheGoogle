@@ -83,6 +83,8 @@ function _getPlayerIndexByNumber(playerNumber) {
     return playerIndex;
 }
 
+let googleJumpInterval;
+
 function _doesPositionMathWithPlayer1Position(newPosition) {
     return newPosition.x === _state.positions.players[0].x && newPosition.y === _state.positions.players[0].y;
 }
@@ -139,7 +141,7 @@ export async function start() {
     _state.points.players[0] = 0;
     _state.points.players[1] = 0;
     
-    let googleJumpInterval = setInterval(() => {
+    googleJumpInterval = setInterval(() => {
         const oldPosition = {..._state.positions.google};
 
         _jumpGoogleToNewPosition();
