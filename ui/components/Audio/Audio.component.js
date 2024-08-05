@@ -10,9 +10,8 @@ export function AudioComponent() {
             missAudio.play();
         }
         if (e.name === EVENTS.GOOGLE_CAUGHT) {
-            // catchAudio.currentTime = 0;
+            catchAudio.currentTime = 0;
             catchAudio.play();
         }
     })
-    
 }
