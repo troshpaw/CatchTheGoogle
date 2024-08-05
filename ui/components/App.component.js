@@ -5,6 +5,7 @@ import { LoseComponent } from "./Lose/Lose.component.js";
 import { getGameStatus, subscribe } from "../../core/state-manager.js";
 import { GAME_STATUSES } from "../../core/constants.js";
 import { StartComponent } from "./Start/Start.component.js";
+import { WinComponent } from "./Win/Win.component.js";
 
 export function AppComponent() {
     const localState = { prevGameStatus: null, cleanupFunctions: [] };
@@ -59,7 +60,12 @@ async function render(element, localState) {
             const loseComponent = LoseComponent();
             
             element.append(loseComponent.element);
-            break;    
+            break;
+        case GAME_STATUSES.WIN:
+            const winComponent = WinComponent();
+            
+            element.append(winComponent.element);
+            break;
         default:
             throw new Error('not implemented');
     }
