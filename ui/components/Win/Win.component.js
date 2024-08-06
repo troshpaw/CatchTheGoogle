@@ -1,4 +1,4 @@
-import { playAgain } from "../../../core/state-manager.js";
+import { playAgain } from "../../../core/state-manager-proxy.js";
 
 export function WinComponent() {
     const element = document.createElement('div');

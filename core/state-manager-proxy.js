@@ -1,5 +1,12 @@
 import { EVENTS, GAME_STATUSES, MOVING_DIRECTIONS } from "./constants.js";
 
+const eventSource = new EventSource('http://localhost:3000/events');
+
+eventSource.addEventListener('message', (ese) => {
+    const event = JSON.parse(ese.data);
+    _notifyObservers(event.name, event.payload);
+})
+
 // OBSERVER
 let _observers = [];
 
@@ -37,7 +44,7 @@ export async function playAgain() {
 }
 
 export async function movePlayer(playerNumber, direction) {
-    fetch(`http://localhost:3000/playAgain?playerNumber=${playerNumber}&direction=${direction}`);
+    fetch(`http://localhost:3000/movePlayer?playerNumber=${playerNumber}&direction=${direction}`);
 }
 
 // GETTERS / SELECTORS / QUERY

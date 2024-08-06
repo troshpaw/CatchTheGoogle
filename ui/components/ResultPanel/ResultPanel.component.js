@@ -1,5 +1,5 @@
 import { EVENTS } from "../../../core/constants.js";
-import { getGooglePoints, getPlayerPoints, subscribe, unsubscribe } from "../../../core/state-manager.js";
+import { getGooglePoints, getPlayerPoints, subscribe, unsubscribe } from "../../../core/state-manager-proxy.js";
 
 export function ResultPanelComponent() {
     const element = document.createElement('div');

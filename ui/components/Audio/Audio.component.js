@@ -1,5 +1,5 @@
 import { EVENTS } from "../../../core/constants.js";
-import { subscribe } from "../../../core/state-manager.js";
+import { subscribe } from "../../../core/state-manager-proxy.js";
 
 export function AudioComponent() {
     const catchAudio = new Audio('assets/sounds/catch.wav');

@@ -1,5 +1,5 @@
 import { EVENTS } from "../../../../core/constants.js";
-import { getGooglePosition, getPlayerPosition, subscribe, unsubscribe } from "../../../../core/state-manager.js";
+import { getGooglePosition, getPlayerPosition, subscribe, unsubscribe } from "../../../../core/state-manager-proxy.js";
 import { GoogleComponent } from "../../common/Google/Google.component.js";
 import { PlayerComponent } from "../../common/Player/Player.component.js";
 
