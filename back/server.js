@@ -16,7 +16,7 @@ app.get('/playAgain', async (req, res) => {
 });
 
 app.get('/movePlayer', async (req, res) => {
-    await movePlayer(playerNumber, direction);
+    await movePlayer(req.query.playerNumber, req.query.direction);
     res.send(200);
 });
 
@@ -26,7 +26,7 @@ app.get('/getGooglePoints', async (req, res) => {
 });
 
 app.get('/getPlayerPoints', async (req, res) => {
-    const playerPoints = await getPlayerPoints();
+    const playerPoints = await getPlayerPoints(req.query.playerNumber);
     res.send({data: playerPoints});
 });
 
@@ -46,7 +46,7 @@ app.get('/getGooglePosition', async (req, res) => {
 });
 
 app.get('/getPlayerPosition', async (req, res) => {
-    const playerPosition = await getPlayerPosition();
+    const playerPosition = await getPlayerPosition(req.query.playerNumber);
     res.send({data: playerPosition});
 });
 
