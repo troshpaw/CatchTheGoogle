@@ -1,8 +1,21 @@
 import express from 'express';
-import {start, playAgain, movePlayer, getGooglePoints, getPlayerPoints, getGameStatus} from '../core/state-manager.js';
-import {getGridSize, getGooglePosition, getPlayerPosition} from '../core/state-manager.js';
+import cors from 'cors';
+import {
+    start, 
+    playAgain, 
+    movePlayer, 
+    getGooglePoints, 
+    getPlayerPoints, 
+    getGameStatus, 
+    getGridSize, 
+    getGooglePosition, 
+    getPlayerPosition
+} from '../core/state-manager-server.js';
 
 const app = express();
+
+app.use(cors())
+
 const port = 3000;
 
 app.get('/start', async (req, res) => {
